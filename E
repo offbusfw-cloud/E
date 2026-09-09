@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบเติมเงินและโอนเงิน (Laos Wallet)</title>
+    <!-- Tailwind CSS สำหรับจัดแต่งหน้าตาให้สวยงามทันสมัย -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Phetsarath', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen">
+
+    <!-- Container จำลองหน้าจอมือถือ -->
+    <div class="w-full max-w-md bg-white shadow-2xl rounded-3xl overflow-hidden min-h-[700px] flex flex-col justify-between relative border border-gray-200">
+
+        <!-- 1. หน้าเข้าสู่ระบบ (Login) -->
+        <div id="loginSection" class="p-8 flex flex-col justify-center flex-grow">
+            <div class="text-center mb-8">
+                <div class="bg-red-600 text-white w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-3xl font-bold shadow-lg mb-4">L</div>
+                <h1 class="text-2xl font-bold text-gray-800">ເຂົ້າສູ່ລະບົບ</h1>
+                <p class="text-sm text-gray-500">ຍິນດີຕ້ອນຮັບກັບຄືນສູ່ແອບກະເປົາເງິນ</p>
+            </div>
+            
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">ເບີໂທລະສັບ / ຢູເຊີເນມ</label>
+                    <input type="text" id="loginUser" required class="mt-1 w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">ລະຫັດຜ່ານ (Password)</label>
+                    <input type="password" id="loginPass" required class="mt-1 w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow-md transition">ເຂົ້າສູ່ລະບົບ</button>
+            </form>
+
+            <div class="text-center mt-6">
+                <p class="text-sm text-gray-600">ຍັງບໍ່ມີບັນຊີ? <button onclick="switchView('registerSection')" class="text-red-600 font-bold hover:underline">ສະໝັກສະມາຊິກ</button></p>
+            </div>
+        </div>
+
+        <!-- 2. หน้าสมัครสมาชิก (Register) - ตั้งชื่อเองได้ -->
+        <div id="registerSection" class="p-8 flex flex-col justify-center flex-grow hidden">
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">ສ້າງບັນຊີໃໝ່</h1>
+                <p class="text-sm text-gray-500">ສະໝັກສະມາຊິກເພື່ອເລີ່ມຕົ້ນໃຊ້ງານ</p>
+            </div>
+            
+            <form onsubmit="handleRegister(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">ຕັ້ງຊື່ບັນຊີຂອງທ່ານ (Username/Name)</label>
+                    <input type="text" id="regName" required class="mt-1 w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none" placeholder="ເຊັ່ນ: Somchai Wallet">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">ເບີໂທລະສັບ</label>
+                    <input type="text" id="regUser" required class="mt-1 w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none" placeholder="020 xxxxxxxx">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">ລະຫັດຜ່ານ</label>
+                    <input type="password" id="regPass" required class="mt-1 w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow-md transition">ຢືນຢັນການສະໝັກ</button>
+            </form>
+
+            <div class="text-center mt-6">
+                <p class="text-sm text-gray-600">ມີບັນຊີແລ້ວ? <button onclick="switchView('loginSection')" class="text-red-600 font-bold hover:underline">ເຂົ້າສູ່ລະບົບ</button></p>
+            </div>
+        </div>
+
+        <!-- 3. หน้าหลักแอป (Dashboard / Wallet) -->
+        <div id="dashboardSection" class="flex flex-col flex-grow hidden">
+            <!-- Header -->
+            <div class="bg-red-600 text-white p-6 rounded-b-3xl shadow-md">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <p class="text-xs text-red-200">ສະບາຍດີ, ຍິນດີຕ້ອນຮັບ</p>
+                        <h2 id="displayName" class="text-xl font-bold">ຊື່ຜູ້ໃຊ້</h2>
+                    </div>
+                    <button onclick="logout()" class="bg-red-700 text-xs px-3 py-1.5 rounded-lg hove
